@@ -1,6 +1,6 @@
 package com.slash.slash.services;
 
-import com.slash.slash.models.Product;
+import com.slash.slash.exceptions.UserAlreadyExists;
 import com.slash.slash.models.User;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.repository.UserRepository;
@@ -18,12 +18,11 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User addUser(User user) {
+    public User addUser(User user) throws UserAlreadyExists {
         List<UserDto> userList = listUsers();
         for (UserDto savedUsers : userList) {
-            if (savedUsers.getName() == user.getName() && savedUsers.getSurname() == user.getSurname()) {
-                System.out.println("User already exists");
-                return null;
+            if (savedUsers.getName().equals(user.getName()) && savedUsers.getSurname().equals(user.getSurname())) {
+                throw new UserAlreadyExists();
             }
         }
         return userRepository.save(user);
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
         List<UserDto> userList = listUsers();
 
         for (UserDto userDto : userList) {
-            if (userDto.getName() == name && userDto.getSurname() == surname) return userDto;
+            if (userDto.getName().equals(name) && userDto.getSurname().equals(surname)) return userDto;
         }
         return null;
 

@@ -1,5 +1,6 @@
 package com.slash.slash.services;
 
+import com.slash.slash.exceptions.UserAlreadyExists;
 import com.slash.slash.models.User;
 import com.slash.slash.models.UserDto;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
 
-    public User addUser (User user);
+    public User addUser (User user) throws UserAlreadyExists;
     public void deleteUser(User user);
     public User editUser (String userEmail, String userPass, User user);
     public void login (String userEmail, String userPassword);

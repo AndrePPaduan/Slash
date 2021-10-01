@@ -1,5 +1,6 @@
 package com.slash.slash.models;
 
+/* import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,4 +46,4 @@ public class GenericUser {
     public void setEmail(String email) {
         this.email = email;
     }
-}
+}*/

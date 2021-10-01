@@ -1,5 +1,6 @@
 package com.slash.slash.controllers;
 
+import com.slash.slash.exceptions.CompanyAlreadyExists;
 import com.slash.slash.models.Company;
 import com.slash.slash.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,33 +17,33 @@ public class CompanyController {
     private CompanyService companyService;
 
     @PostMapping("/company")
-    public ResponseEntity addCompany(Company company) {
+    public ResponseEntity<?> addCompany(Company company) throws CompanyAlreadyExists {
         companyService.addCompany(company);
-        return new ResponseEntity(company, HttpStatus.CREATED);
+        return new ResponseEntity<>(company, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/company")
-    public ResponseEntity deleteCompany(Company company) {
+    public ResponseEntity<?> deleteCompany(Company company) {
         companyService.deleteCompany(company);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/company")
-    public ResponseEntity editCompany(Company oldCompany, Company newCompany) {
+    public ResponseEntity<?> editCompany(Company oldCompany, Company newCompany) {
         companyService.editCompany(oldCompany, newCompany);
-        return new ResponseEntity(oldCompany, HttpStatus.OK);
+        return new ResponseEntity<>(oldCompany, HttpStatus.OK);
     }
 
     @GetMapping("/company")
-    public ResponseEntity listCompanies() {
+    public ResponseEntity<?> listCompanies() {
         List<Company> companyList = companyService.listCompanies();
-        return new ResponseEntity(companyList, HttpStatus.OK);
+        return new ResponseEntity<>(companyList, HttpStatus.OK);
     }
 
     @GetMapping("/company/name/{name}")
-    public ResponseEntity retrieveCompanyByName(String name) {
+    public ResponseEntity<?> retrieveCompanyByName(String name) {
         Company company = companyService.retrieveCompanyByName(name);
-        return new ResponseEntity(company, HttpStatus.OK);
+        return new ResponseEntity<>(company, HttpStatus.OK);
 
 
     }

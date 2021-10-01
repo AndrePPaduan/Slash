@@ -1,5 +1,6 @@
 package com.slash.slash.services;
 
+import com.slash.slash.exceptions.ProductAlreadyExists;
 import com.slash.slash.models.Product;
 import com.slash.slash.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,11 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product addProduct(Product product) {
+    public Product addProduct(Product product) throws ProductAlreadyExists {
         List<Product> productList = listProducts();
         for (Product savedProduct : productList) {
-            if (savedProduct.getName() == product.getName()) {
-                System.out.println("Product name already exists");
-                return null;
+            if (savedProduct.getName().equals(product.getName())) {
+                throw new ProductAlreadyExists();
             }
         }
         return productRepository.save(product);
@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> selectedProducts = new LinkedList<>();
 
         for (Product product : productList) {
-            if (product.getType() == type) {
+            if (product.getType().equals(type)) {
                 selectedProducts.add(product);
             }
         }
@@ -75,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> selectedProducts = new LinkedList<>();
 
         for (Product product : productList) {
-            if (product.getCompany().getCity() == city) {
+            if (product.getCompany().getCity().equals(city)) {
                 selectedProducts.add(product);
             }
         }
@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = listProducts();
 
         for (Product product : productList) {
-            if (product.getName() == name) return product;
+            if (product.getName().equals(name)) return product;
         }
         return null;
     }
