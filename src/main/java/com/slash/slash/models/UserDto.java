@@ -1,9 +1,5 @@
 package com.slash.slash.models;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 public class UserDto {
 
     private String name;

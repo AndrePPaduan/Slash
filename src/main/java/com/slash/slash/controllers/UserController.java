@@ -6,6 +6,7 @@ import com.slash.slash.models.UserDto;
 import com.slash.slash.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -16,19 +17,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/user")
+    @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addUser(User user) throws UserAlreadyExists {
         userService.addUser(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/user")
+    @DeleteMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteUser(User user) {
         userService.deleteUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/user")
+    @PutMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> editUser(String userEmail, String userPass, User user) {
         return null;
     }
@@ -50,13 +51,13 @@ public class UserController {
         return null;
     }
 
-    @GetMapping("/user")
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> listUsers() {
         List<UserDto> userList = userService.listUsers();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @GetMapping("/user/name/{name}/{surname}")
+    @GetMapping(value = "/user/name/{name}/{surname}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> retrieveUserByName(String name, String surname) {
         UserDto userDto = userService.retrieveUserByName(name, surname);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
