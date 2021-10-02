@@ -1,7 +1,9 @@
 package com.slash.slash.controllers;
 
+import com.slash.slash.exceptions.NotAuthorized;
 import com.slash.slash.exceptions.UserAlreadyExists;
 import com.slash.slash.exceptions.UserHasNoName;
+import com.slash.slash.exceptions.UserDoesNotExist;
 import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.services.UserService;
@@ -24,15 +26,16 @@ public class UserController {
         return new ResponseEntity<>(createdUSer, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/user")
-    public ResponseEntity<?> deleteUser(Users user) {
-        userService.deleteUser(user);
+    @DeleteMapping("/user/{name}/{surname}/{password}")
+    public ResponseEntity<?> deleteUser(String name, String surname, String password) throws UserDoesNotExist, NotAuthorized {
+        userService.deleteUser(name, surname, password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/user")
-    public ResponseEntity<?> editUser(String userEmail, String userPass, Users user) {
-        return null;
+    public ResponseEntity<?> editUser(String name, String surname, String password, Users user) throws NotAuthorized, UserDoesNotExist, UserAlreadyExists {
+       Users editedUser = userService.editUser(name, surname, password, user);
+        return new ResponseEntity<>(editedUser, HttpStatus.OK);
     }
 
 

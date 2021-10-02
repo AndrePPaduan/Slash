@@ -1,7 +1,9 @@
 package com.slash.slash.services;
 
+import com.slash.slash.exceptions.NotAuthorized;
 import com.slash.slash.exceptions.UserAlreadyExists;
 import com.slash.slash.exceptions.UserHasNoName;
+import com.slash.slash.exceptions.UserDoesNotExist;
 import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.repository.UserRepository;
@@ -34,17 +36,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Users user) {
+    public void deleteUser(String name, String surname, String password) throws UserDoesNotExist, NotAuthorized {
+        Users user = retrieveFullUserByName(name, surname);
         if (user != null) {
-            userRepository.delete(user);
+            if (password.equals(user.getPassword())) {
+                userRepository.delete(user);
+            } else {
+                throw new NotAuthorized();
+            }
         } else {
-            System.out.println("User does not exist");
+            throw new UserDoesNotExist();
         }
     }
 
     @Override
-    public Users editUser(String userEmail, String userPass, Users user) {
-        return null;
+    public Users editUser(String name, String surname, String password, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists {
+        Users oldUser = retrieveFullUserByName(name, surname);
+        if (oldUser == null) {
+            throw new UserDoesNotExist();
+        }
+
+        List<UserDto> userList = listUsers();
+        for (UserDto savedUsers : userList) {
+            if (savedUsers.getName().equals(user.getName()) && savedUsers.getSurname().equals(user.getSurname()) && oldUser.getId() != user.getId()) {
+                throw new UserAlreadyExists();
+            }
+        }
+
+        if (password.equals(user.getPassword())) {
+            oldUser.setEmail(user.getEmail());
+            oldUser.setName(user.getName());
+            oldUser.setSurname(user.getSurname());
+
+        } else {
+            throw new NotAuthorized();
+        }
+        return oldUser;
     }
 
 
@@ -91,8 +118,18 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public UserDto userToUserDto(Users user) {
+    private Users retrieveFullUserByName(String name, String surname) {
+
+        List<Users> userList = userRepository.findAll();
+
+        for (Users user : userList) {
+            if (user.getName().equals(name) && user.getSurname().equals(surname)) return user;
+        }
+        return null;
+
+    }
+
+    private UserDto userToUserDto(Users user) {
         UserDto userDto = new UserDto();
         userDto.setName(user.getName());
         userDto.setSurname(user.getSurname());
@@ -100,5 +137,4 @@ public class UserServiceImpl implements UserService {
 
         return userDto;
     }
-
 }
