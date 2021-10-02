@@ -30,10 +30,10 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/product")
-    public ResponseEntity<?> editProduct(String oldProduct, Product newProduct) throws ProducDoesNotExist, ProductAlreadyExists {
-        productService.editProduct(oldProduct, newProduct);
-        return new ResponseEntity<>(oldProduct, HttpStatus.OK);
+    @PutMapping("/product/{productName}")
+    public ResponseEntity<?> editProduct(@PathVariable String productName, Product newProduct) throws ProducDoesNotExist, ProductAlreadyExists {
+        productService.editProduct(productName, newProduct);
+        return new ResponseEntity<>(productName, HttpStatus.OK);
     }
 
     @GetMapping("/product")
@@ -42,13 +42,13 @@ public class ProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
-    @GetMapping("/product/type/{type}")
+    @GetMapping("/product/type")
     public ResponseEntity<?> listProductByType(String type) {
         List<Product> productList = productService.listProductByType(type);
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
-    @GetMapping("/product/city/{city}")
+    @GetMapping("/product/city")
     public ResponseEntity<?> listProductByCity(String city) {
         List<Product> productList = productService.listProductByCity(city);
         return new ResponseEntity<>(productList, HttpStatus.OK);
