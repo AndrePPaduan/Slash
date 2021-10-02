@@ -1,7 +1,9 @@
 package com.slash.slash.services;
 
 import com.slash.slash.exceptions.CompanyAlreadyExists;
+import com.slash.slash.exceptions.CompanyDoesNotExist;
 import com.slash.slash.exceptions.CompanyHasNoName;
+import com.slash.slash.exceptions.ProductListIsNotEmpty;
 import com.slash.slash.models.Company;
 import com.slash.slash.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +37,39 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void deleteCompany(Company company) {
+    public void deleteCompany(String companyName) throws CompanyDoesNotExist, ProductListIsNotEmpty {
+        Company company = retrieveCompanyByName(companyName);
         if (company != null) {
+            if (!company.getProductList().isEmpty()){
+                throw new ProductListIsNotEmpty();
+            }
             companyRepository.delete(company);
         } else {
-            System.out.println("Company does not exist");
+            throw new CompanyDoesNotExist();
         }
     }
 
     @Override
-    public Company editCompany(Company oldCompany, Company newCompany) {
+    public Company editCompany(String companyName, Company newCompany) throws CompanyDoesNotExist, CompanyAlreadyExists {
+        Company oldCompany = retrieveCompanyByName(companyName);
+
+        if (oldCompany == null) {
+            throw new CompanyDoesNotExist();
+        }
+
+        List<Company> companyList = companyRepository.findAll();
+        for (Company savedCompanies : companyList) {
+            if (savedCompanies.getName().equals(newCompany.getName()) && oldCompany.getId() != savedCompanies.getId()) {
+                throw new CompanyAlreadyExists();
+            }
+        }
+
         oldCompany.setAddress(newCompany.getAddress());
         oldCompany.setCity(newCompany.getCity());
         oldCompany.setName(newCompany.getName());
         oldCompany.setPhoneNumber(newCompany.getPhoneNumber());
+
+        companyRepository.save(oldCompany);
 
         return oldCompany;
     }
@@ -60,7 +81,9 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Company retrieveCompanyByName(String name) {
+        System.out.println(name);
         List<Company> companyList = listCompanies();
+
 
         for (Company company : companyList) {
             if (company.getName().equals(name)) return company;

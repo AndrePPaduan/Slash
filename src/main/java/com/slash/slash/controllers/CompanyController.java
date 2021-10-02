@@ -1,12 +1,13 @@
 package com.slash.slash.controllers;
 
 import com.slash.slash.exceptions.CompanyAlreadyExists;
+import com.slash.slash.exceptions.CompanyDoesNotExist;
 import com.slash.slash.exceptions.CompanyHasNoName;
+import com.slash.slash.exceptions.ProductListIsNotEmpty;
 import com.slash.slash.models.Company;
 import com.slash.slash.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +26,15 @@ public class CompanyController {
     }
 
     @DeleteMapping("/company")
-    public ResponseEntity<?> deleteCompany(Company company) {
-        companyService.deleteCompany(company);
+    public ResponseEntity<?> deleteCompany(String companyName) throws CompanyDoesNotExist, ProductListIsNotEmpty {
+        companyService.deleteCompany(companyName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/company/{oldCompany}/{newCompany}")
-    public ResponseEntity<?> editCompany(Company oldCompany, Company newCompany) {
-        companyService.editCompany(oldCompany, newCompany);
-        return new ResponseEntity<>(oldCompany, HttpStatus.OK);
+    @PutMapping("/company/{companyName}")
+    public ResponseEntity<?> editCompany(@PathVariable String companyName, Company newCompany) throws CompanyDoesNotExist, CompanyAlreadyExists {
+        Company company = companyService.editCompany(companyName, newCompany);
+        return new ResponseEntity<>(company, HttpStatus.OK);
     }
 
     @GetMapping("/company")
@@ -42,8 +43,9 @@ public class CompanyController {
         return new ResponseEntity<>(companyList, HttpStatus.OK);
     }
 
-    @GetMapping("/company/name/{name}")
-    public ResponseEntity<?> retrieveCompanyByName(String name) {
+    @GetMapping("/company/{name}")
+    public ResponseEntity<?> retrieveCompanyByName(@PathVariable String name) {
+        System.out.println(name);
         Company company = companyService.retrieveCompanyByName(name);
         return new ResponseEntity<>(company, HttpStatus.OK);
 
