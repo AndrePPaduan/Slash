@@ -1,14 +1,15 @@
 package com.slash.slash.controllers;
 
 import com.slash.slash.exceptions.UserAlreadyExists;
-import com.slash.slash.models.User;
+import com.slash.slash.exceptions.UserHasNoName;
+import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -17,20 +18,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addUser(User user) throws UserAlreadyExists {
-        userService.addUser(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    @PostMapping("/user")
+    public ResponseEntity<?> addUser(Users user) throws UserAlreadyExists, UserHasNoName {
+        Users createdUSer = userService.addUser(user);
+        return new ResponseEntity<>(createdUSer, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteUser(User user) {
+    @DeleteMapping("/user")
+    public ResponseEntity<?> deleteUser(Users user) {
         userService.deleteUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> editUser(String userEmail, String userPass, User user) {
+    @PutMapping("/user")
+    public ResponseEntity<?> editUser(String userEmail, String userPass, Users user) {
         return null;
     }
 
@@ -51,13 +52,13 @@ public class UserController {
         return null;
     }
 
-    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/user")
     public ResponseEntity<?> listUsers() {
         List<UserDto> userList = userService.listUsers();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/user/name/{name}/{surname}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/user/name/{name}/{surname}")
     public ResponseEntity<?> retrieveUserByName(String name, String surname) {
         UserDto userDto = userService.retrieveUserByName(name, surname);
         return new ResponseEntity<>(userDto, HttpStatus.OK);

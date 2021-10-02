@@ -10,6 +10,8 @@ insert into product values (4, 'save stuff on it','link4', 'pendrive', 'tech', 2
 insert into product values (5, 'sleek design, wow','link5', 'cell phone cover', 'other', 2)
 insert into product values (6, 'comes in a separate box, for the environment','link6', 'icharger', 'other', 2)
 
-
-
+insert into users values (1,'john@lennon.com', 'John','pass12', 'Lennon')
+insert into users values (2,'paul@mccartney.com', 'Paul','pass34', 'McCartney')
+insert into users values (3,'george@harrison.com', 'George','pass56', 'Harrison')
+insert into users values (4,'ringo@starr.com', 'Ringo','pass78', 'Starr')
 

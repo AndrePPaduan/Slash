@@ -1,6 +1,7 @@
 package com.slash.slash.services;
 
 import com.slash.slash.exceptions.CompanyAlreadyExists;
+import com.slash.slash.exceptions.CompanyHasNoName;
 import com.slash.slash.models.Company;
 import com.slash.slash.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,14 @@ public class CompanyServiceImpl implements CompanyService {
     private CompanyRepository companyRepository;
 
     @Override
-    public Company addCompany(Company company) throws CompanyAlreadyExists {
+    public Company addCompany(Company company) throws CompanyAlreadyExists, CompanyHasNoName {
 
         List<Company> companyList = listCompanies();
+
+        if (company.getName() == null) {
+            throw new CompanyHasNoName();
+        }
+
         for (Company savedCompany : companyList) {
             if (savedCompany.getName().equals(company.getName())) {
                 throw new CompanyAlreadyExists();

@@ -1,6 +1,8 @@
 package com.slash.slash.services;
 
 import com.slash.slash.exceptions.ProductAlreadyExists;
+import com.slash.slash.exceptions.ProductHasNoName;
+import com.slash.slash.exceptions.UserHasNoName;
 import com.slash.slash.models.Product;
 import com.slash.slash.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,13 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product addProduct(Product product) throws ProductAlreadyExists {
+    public Product addProduct(Product product) throws ProductAlreadyExists, ProductHasNoName {
         List<Product> productList = listProducts();
+
+        if (product.getName() == null) {
+            throw new ProductHasNoName();
+        }
+
         for (Product savedProduct : productList) {
             if (savedProduct.getName().equals(product.getName())) {
                 throw new ProductAlreadyExists();

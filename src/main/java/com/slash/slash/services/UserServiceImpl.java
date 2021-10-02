@@ -1,7 +1,8 @@
 package com.slash.slash.services;
 
 import com.slash.slash.exceptions.UserAlreadyExists;
-import com.slash.slash.models.User;
+import com.slash.slash.exceptions.UserHasNoName;
+import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,12 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User addUser(User user) throws UserAlreadyExists {
+    public Users addUser(Users user) throws UserAlreadyExists, UserHasNoName {
         List<UserDto> userList = listUsers();
+
+        if (user.getName() == null || user.getSurname() == null) {
+            throw new UserHasNoName();
+        }
         for (UserDto savedUsers : userList) {
             if (savedUsers.getName().equals(user.getName()) && savedUsers.getSurname().equals(user.getSurname())) {
                 throw new UserAlreadyExists();
@@ -29,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(Users user) {
         if (user != null) {
             userRepository.delete(user);
         } else {
@@ -38,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User editUser(String userEmail, String userPass, User user) {
+    public Users editUser(String userEmail, String userPass, Users user) {
         return null;
     }
 
@@ -65,10 +70,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> listUsers() {
-        List<User> userList = userRepository.findAll();
+        List<Users> userList = userRepository.findAll();
         List<UserDto> userDtoList = new LinkedList<>();
 
-        for (User user : userList) {
+        for (Users user : userList) {
             userDtoList.add(userToUserDto(user));
         }
         return userDtoList;
@@ -87,7 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto userToUserDto(User user) {
+    public UserDto userToUserDto(Users user) {
         UserDto userDto = new UserDto();
         userDto.setName(user.getName());
         userDto.setSurname(user.getSurname());
