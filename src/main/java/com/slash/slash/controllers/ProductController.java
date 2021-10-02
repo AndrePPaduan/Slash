@@ -18,9 +18,9 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/product")
-    public ResponseEntity<?> addProduct(Product product) throws ProductAlreadyExists, ProductHasNoName {
-        Product createdProduct = productService.addProduct(product);
+    @PostMapping("/product/{companyName}")
+    public ResponseEntity<?> addProduct(@PathVariable String companyName, Product product) throws ProductAlreadyExists, ProductHasNoName {
+        Product createdProduct = productService.addProduct(product, companyName);
         return  new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 

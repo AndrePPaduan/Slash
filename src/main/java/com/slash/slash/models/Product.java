@@ -1,5 +1,7 @@
 package com.slash.slash.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,7 +16,9 @@ public class Product {
     private String description;
     private String imageLink;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="COMPANY_ID")
+    @JsonBackReference
     private Company company;
 
     public int getId() {

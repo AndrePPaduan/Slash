@@ -5,6 +5,7 @@ import com.slash.slash.exceptions.CompanyDoesNotExist;
 import com.slash.slash.exceptions.CompanyHasNoName;
 import com.slash.slash.exceptions.ProductListIsNotEmpty;
 import com.slash.slash.models.Company;
+import com.slash.slash.models.Product;
 import com.slash.slash.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,17 @@ public class CompanyServiceImpl implements CompanyService {
             if (company.getName().equals(name)) return company;
         }
         return null;
+    }
+
+    @Override
+    public void addProduct(String companyName, Product product) {
+        Company company = retrieveCompanyByName(companyName);
+        company.addProduct(product);
+    }
+
+    @Override
+    public void deleteProduct(String companyName, Product product) {
+        Company company = retrieveCompanyByName(companyName);
+        company.deleteProduct(product);
     }
 }

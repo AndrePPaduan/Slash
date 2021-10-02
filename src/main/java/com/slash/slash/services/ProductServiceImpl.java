@@ -18,9 +18,12 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private CompanyService companyService;
+
 
     @Override
-    public Product addProduct(Product product) throws ProductAlreadyExists, ProductHasNoName {
+    public Product addProduct(Product product, String companyName) throws ProductAlreadyExists, ProductHasNoName {
         List<Product> productList = listProducts();
 
         if (product.getName() == null) {
@@ -32,6 +35,8 @@ public class ProductServiceImpl implements ProductService {
                 throw new ProductAlreadyExists();
             }
         }
+        companyService.addProduct(companyName, product);
+        product.setCompany(companyService.retrieveCompanyByName(companyName));
         return productRepository.save(product);
     }
 

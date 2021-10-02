@@ -1,5 +1,7 @@
 package com.slash.slash.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,7 +17,9 @@ public class Company {
     private long phoneNumber;
     private String city;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name="COMPANY_ID")
+    @JsonManagedReference
     private List<Product> productList;
 
 
@@ -65,5 +69,14 @@ public class Company {
 
     public void setProductList(List<Product> productList) {
         this.productList = productList;
+    }
+
+    public void addProduct(Product product) {
+        productList.add(product);
+    }
+
+    public void deleteProduct(Product product) {
+        productList.remove(product);
+
     }
 }
