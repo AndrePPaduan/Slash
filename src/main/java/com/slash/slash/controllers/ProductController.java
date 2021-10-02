@@ -1,5 +1,6 @@
 package com.slash.slash.controllers;
 
+import com.slash.slash.exceptions.ProducDoesNotExist;
 import com.slash.slash.exceptions.ProductAlreadyExists;
 import com.slash.slash.exceptions.ProductHasNoName;
 import com.slash.slash.models.Product;
@@ -24,13 +25,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/product")
-    public ResponseEntity<?> deleteProduct(Product product) {
-        productService.deleteProduct(product);
+    public ResponseEntity<?> deleteProduct(String productName) throws ProducDoesNotExist {
+        productService.deleteProduct(productName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/product")
-    public ResponseEntity<?> editProduct(Product oldProduct, Product newProduct) {
+    public ResponseEntity<?> editProduct(String oldProduct, Product newProduct) throws ProducDoesNotExist, ProductAlreadyExists {
         productService.editProduct(oldProduct, newProduct);
         return new ResponseEntity<>(oldProduct, HttpStatus.OK);
     }
@@ -53,8 +54,8 @@ public class ProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
-    @GetMapping("/product/name/{name}")
-    public ResponseEntity<?> retrieveProductByName(String name) {
+    @GetMapping("/product/{name}")
+    public ResponseEntity<?> retrieveProductByName(@PathVariable String name) {
         Product product = productService.retrieveProductByName(name);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }

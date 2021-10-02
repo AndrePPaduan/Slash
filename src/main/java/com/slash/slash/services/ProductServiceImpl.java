@@ -1,5 +1,6 @@
 package com.slash.slash.services;
 
+import com.slash.slash.exceptions.ProducDoesNotExist;
 import com.slash.slash.exceptions.ProductAlreadyExists;
 import com.slash.slash.exceptions.ProductHasNoName;
 import com.slash.slash.exceptions.UserHasNoName;
@@ -35,22 +36,37 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Product product) {
+    public void deleteProduct(String productName) throws ProducDoesNotExist {
+        Product product = retrieveProductByName(productName);
         if (product != null) {
             productRepository.delete(product);
         } else {
-            System.out.println("Product does not exist");
+            throw new ProducDoesNotExist();
         }
     }
 
     @Override
-    public Product editProduct(Product oldProduct, Product newProduct) {
+    public Product editProduct(String productName, Product newProduct) throws ProducDoesNotExist, ProductAlreadyExists {
+        Product oldProduct = retrieveProductByName(productName);
+
+        if (oldProduct == null) {
+            throw new ProducDoesNotExist();
+        }
+
+        List<Product> productList = productRepository.findAll();
+        for (Product savedProduct : productList) {
+            if (savedProduct.getName().equals(newProduct.getName()) && oldProduct.getId() != savedProduct.getId()) {
+                throw new ProductAlreadyExists();
+            }
+        }
 
         oldProduct.setName(newProduct.getName());
         oldProduct.setType(newProduct.getType());
         oldProduct.setDescription(newProduct.getDescription());
         oldProduct.setCompany(newProduct.getCompany());
         oldProduct.setImageLink(newProduct.getImageLink());
+
+        productRepository.save(oldProduct);
 
         return oldProduct;
     }
