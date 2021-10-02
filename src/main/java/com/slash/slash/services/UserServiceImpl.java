@@ -50,23 +50,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users editUser(String name, String surname, String password, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists {
+    public Users editUser(String name, String surname, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists {
         Users oldUser = retrieveFullUserByName(name, surname);
         if (oldUser == null) {
             throw new UserDoesNotExist();
         }
 
-        List<UserDto> userList = listUsers();
-        for (UserDto savedUsers : userList) {
-            if (savedUsers.getName().equals(user.getName()) && savedUsers.getSurname().equals(user.getSurname()) && oldUser.getId() != user.getId()) {
+        List<Users> userList = userRepository.findAll();
+        for (Users savedUsers : userList) {
+            if (savedUsers.getName().equals(user.getName()) && savedUsers.getSurname().equals(user.getSurname()) && oldUser.getId() != savedUsers.getId()) {
                 throw new UserAlreadyExists();
             }
         }
 
-        if (password.equals(user.getPassword())) {
+        if (oldUser.getPassword().equals(user.getPassword())) {
             oldUser.setEmail(user.getEmail());
             oldUser.setName(user.getName());
             oldUser.setSurname(user.getSurname());
+            userRepository.save(oldUser);
 
         } else {
             throw new NotAuthorized();

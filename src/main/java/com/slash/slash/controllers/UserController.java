@@ -26,15 +26,15 @@ public class UserController {
         return new ResponseEntity<>(createdUSer, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/user/{name}/{surname}/{password}")
+    @DeleteMapping("/user")
     public ResponseEntity<?> deleteUser(String name, String surname, String password) throws UserDoesNotExist, NotAuthorized {
-        userService.deleteUser(name, surname, password);
+          userService.deleteUser(name, surname, password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/user")
-    public ResponseEntity<?> editUser(String name, String surname, String password, Users user) throws NotAuthorized, UserDoesNotExist, UserAlreadyExists {
-       Users editedUser = userService.editUser(name, surname, password, user);
+    @PutMapping("/user/{name}/{surname}")
+    public ResponseEntity<?> editUser(@PathVariable String name,@PathVariable String surname, Users user) throws NotAuthorized, UserDoesNotExist, UserAlreadyExists {
+       Users editedUser = userService.editUser(name, surname, user);
         return new ResponseEntity<>(editedUser, HttpStatus.OK);
     }
 

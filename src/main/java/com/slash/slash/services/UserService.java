@@ -13,7 +13,7 @@ public interface UserService {
 
     public Users addUser (Users user) throws UserAlreadyExists, UserHasNoName;
     public void deleteUser(String name, String surname, String password) throws UserDoesNotExist, NotAuthorized;
-    public Users editUser (String name, String surname, String userPass, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists;
+    public Users editUser (String name, String surname, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists;
     public void login (String userEmail, String userPassword);
     public void sendConfirmationEmail(String userEmail);
     public void closeSession (String userEmail);
