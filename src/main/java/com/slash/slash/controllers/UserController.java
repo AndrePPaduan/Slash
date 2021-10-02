@@ -61,8 +61,8 @@ public class UserController {
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @GetMapping("/user/name/{name}/{surname}")
-    public ResponseEntity<?> retrieveUserByName(String name, String surname) {
+    @GetMapping("/user/{name}/{surname}")
+    public ResponseEntity<?> retrieveUserByName(@PathVariable String name,@PathVariable String surname) {
         UserDto userDto = userService.retrieveUserByName(name, surname);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
