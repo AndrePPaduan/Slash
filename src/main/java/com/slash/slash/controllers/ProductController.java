@@ -1,5 +1,6 @@
 package com.slash.slash.controllers;
 
+import com.slash.slash.exceptions.CompanyDoesNotExist;
 import com.slash.slash.exceptions.ProducDoesNotExist;
 import com.slash.slash.exceptions.ProductAlreadyExists;
 import com.slash.slash.exceptions.ProductHasNoName;
@@ -19,7 +20,7 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/product/{companyName}")
-    public ResponseEntity<?> addProduct(@PathVariable String companyName, Product product) throws ProductAlreadyExists, ProductHasNoName {
+    public ResponseEntity<?> addProduct(@PathVariable String companyName, Product product) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
         Product createdProduct = productService.addProduct(product, companyName);
         return  new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }

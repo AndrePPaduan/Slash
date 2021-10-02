@@ -17,7 +17,7 @@ public class Company {
     private long phoneNumber;
     private String city;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="COMPANY_ID")
     @JsonManagedReference
     private List<Product> productList;

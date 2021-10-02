@@ -1,9 +1,7 @@
 package com.slash.slash.services;
 
-import com.slash.slash.exceptions.ProducDoesNotExist;
-import com.slash.slash.exceptions.ProductAlreadyExists;
-import com.slash.slash.exceptions.ProductHasNoName;
-import com.slash.slash.exceptions.UserHasNoName;
+import com.slash.slash.exceptions.*;
+import com.slash.slash.models.Company;
 import com.slash.slash.models.Product;
 import com.slash.slash.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product addProduct(Product product, String companyName) throws ProductAlreadyExists, ProductHasNoName {
+    public Product addProduct(Product product, String companyName) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
         List<Product> productList = listProducts();
 
         if (product.getName() == null) {
@@ -35,6 +33,10 @@ public class ProductServiceImpl implements ProductService {
                 throw new ProductAlreadyExists();
             }
         }
+
+        Company company = companyService.retrieveCompanyByName(companyName);
+        if (company == null) throw new CompanyDoesNotExist();
+
         companyService.addProduct(companyName, product);
         product.setCompany(companyService.retrieveCompanyByName(companyName));
         return productRepository.save(product);
@@ -44,6 +46,8 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(String productName) throws ProducDoesNotExist {
         Product product = retrieveProductByName(productName);
         if (product != null) {
+            Company company = product.getCompany();
+            company.deleteProduct(product);
             productRepository.delete(product);
         } else {
             throw new ProducDoesNotExist();
