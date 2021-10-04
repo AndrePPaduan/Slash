@@ -1,11 +1,13 @@
 package com.slash.slash.services;
 
+import com.slash.slash.FileManagement.FileController;
 import com.slash.slash.exceptions.*;
 import com.slash.slash.models.Company;
 import com.slash.slash.models.Product;
 import com.slash.slash.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,9 +21,12 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private FileController fileController;
+
 
     @Override
-    public Product addProduct(Product product, String companyName) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
+    public Product addProduct(Product product, String companyName, MultipartFile file) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
         List<Product> productList = listProducts();
 
         if (product.getName() == null) {
@@ -39,7 +44,10 @@ public class ProductServiceImpl implements ProductService {
 
         companyService.addProduct(companyName, product);
         product.setCompany(companyService.retrieveCompanyByName(companyName));
-        return productRepository.save(product);
+        productRepository.save(product);
+        fileController.uploadFile(file, product.getId(), product.getImageLink());
+
+        return product;
     }
 
     @Override
@@ -119,7 +127,9 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = listProducts();
 
         for (Product product : productList) {
-            if (product.getName().equals(name)) return product;
+            if (product.getName().equals(name)){
+                return product;
+            }
         }
         return null;
     }

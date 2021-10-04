@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/product/{companyName}")
-    public ResponseEntity<?> addProduct(@PathVariable String companyName, Product product) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
-        Product createdProduct = productService.addProduct(product, companyName);
+    public ResponseEntity<?> addProduct(@PathVariable String companyName, Product product, MultipartFile file) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
+        Product createdProduct = productService.addProduct(product, companyName, file);
         return  new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
