@@ -3,7 +3,6 @@ package com.slash.slash.FileManagement;
 
 import com.slash.slash.exceptions.FileStorageException;
 import com.slash.slash.exceptions.MyFileNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
@@ -41,12 +39,9 @@ public class FileStorageServiceImpl implements FileStorageService {
 
 
         try {
-            // Check if the file's name contains invalid characters
             if (fileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
-
-            // Copy file to the target location (Replacing existing file with the same name)
 
             Path dynamicSubPath = Paths.get(fileStorageLocation.toString(),productName);
 
@@ -64,8 +59,6 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public Resource loadFileAsResource( String productName, String fileName) {
         try {
-            System.out.println("1 " +fileName);
-
             Path dynamicSubPath = Paths.get(fileStorageLocation.toString(),productName,fileName);
             Resource resource = new UrlResource(dynamicSubPath.toUri());
             if (resource.exists()) {
