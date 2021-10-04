@@ -45,7 +45,6 @@ public class CompanyController {
 
     @GetMapping("/company/{name}")
     public ResponseEntity<?> retrieveCompanyByName(@PathVariable String name) {
-        System.out.println(name);
         Company company = companyService.retrieveCompanyByName(name);
         return new ResponseEntity<>(company, HttpStatus.OK);
 

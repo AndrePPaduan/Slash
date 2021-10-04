@@ -1,5 +1,7 @@
 package com.slash.slash.models;
 
+import org.springframework.core.io.Resource;
+
 import java.io.File;
 
 public class ProductDisplayer {
@@ -8,7 +10,7 @@ public class ProductDisplayer {
     private String type;
     private String description;
     private String imageLink;
-    private File image;
+    private Resource image;
     private String companyName;
 
     public String getName() {
@@ -43,11 +45,11 @@ public class ProductDisplayer {
         this.imageLink = imageLink;
     }
 
-    public File getImage() {
+    public Resource getImage() {
         return image;
     }
 
-    public void setImage(File image) {
+    public void setImage(Resource image) {
         this.image = image;
     }
 

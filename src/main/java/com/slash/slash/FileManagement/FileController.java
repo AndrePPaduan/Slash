@@ -18,8 +18,8 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    public UploadFileResponse uploadFile(MultipartFile file, int id, String imageLink) {
-        String fileName = fileStorageService.storeFile(file, id, imageLink);
+    public UploadFileResponse uploadFile(MultipartFile file, String productName, String imageLink) {
+        String fileName = fileStorageService.storeFile(file, productName);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download/")
@@ -31,12 +31,12 @@ public class FileController {
     }
 
 
-    public ResponseEntity<Resource> downloadFile(int id,
+    public ResponseEntity<Resource> downloadFile(String productName,
                                                  String imageLink,
                                                  String fileName,
                                                  HttpServletRequest request) {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(id, imageLink, fileName);
+        Resource resource = fileStorageService.loadFileAsResource(productName, imageLink);
 
         // Try to determine file's content type
         String contentType = null;

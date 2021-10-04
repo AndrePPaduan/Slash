@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface FileStorageService {
 
-    public String storeFile(MultipartFile file, int id, String columnName);
+    public String storeFile(MultipartFile file, String productName);
 
-    public Resource loadFileAsResource(int id, String columnName, String filename);
+    public Resource loadFileAsResource(String productName, String filename);
 }

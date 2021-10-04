@@ -1,6 +1,7 @@
 package com.slash.slash.services;
 
 import com.slash.slash.FileManagement.FileController;
+import com.slash.slash.FileManagement.FileStorageService;
 import com.slash.slash.exceptions.*;
 import com.slash.slash.models.Company;
 import com.slash.slash.models.Product;
@@ -23,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     private CompanyService companyService;
 
     @Autowired
-    private FileController fileController;
+    private FileStorageService fileStorageService;
 
 
     @Override
@@ -45,8 +46,9 @@ public class ProductServiceImpl implements ProductService {
 
         companyService.addProduct(companyName, product);
         product.setCompany(companyService.retrieveCompanyByName(companyName));
+        product.setImageLink(fileStorageService.storeFile(file, product.getName()));
         productRepository.save(product);
-        fileController.uploadFile(file, product.getId(), product.getImageLink());
+
 
         return product;
     }
@@ -127,6 +129,11 @@ public class ProductServiceImpl implements ProductService {
     public ProductDisplayer retrieveProductByName(String name) throws ProducDoesNotExist {
         Product realProduct = retrieveRealProductByName(name);
         ProductDisplayer productDisplayer = convertProductForDisplay(realProduct);
+        productDisplayer.setName(realProduct.getName());
+        productDisplayer.setCompanyName(realProduct.getCompany().getName());
+        productDisplayer.setType(realProduct.getType());
+        productDisplayer.setDescription(realProduct.getDescription());
+        productDisplayer.setImage(fileStorageService.loadFileAsResource(realProduct.getName(), realProduct.getImageLink()));
 
         return productDisplayer;
     }
@@ -139,7 +146,6 @@ public class ProductServiceImpl implements ProductService {
         productDisplayer.setDescription(realProduct.getDescription());
         productDisplayer.setImageLink(realProduct.getImageLink());
         productDisplayer.setType(realProduct.getType());
-        productDisplayer.setImage(fileController.downloadFile(realProduct.getId(), realProduct.getImageLink(), ));
 
         return productDisplayer;
     }

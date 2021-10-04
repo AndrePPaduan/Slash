@@ -8,6 +8,7 @@ import com.slash.slash.models.Product;
 import com.slash.slash.models.ProductDisplayer;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface ProductService {

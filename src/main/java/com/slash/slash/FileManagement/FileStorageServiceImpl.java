@@ -35,7 +35,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public String storeFile(MultipartFile file, int id, String columnName) {
+    public String storeFile(MultipartFile file, String productName) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -48,7 +48,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
             // Copy file to the target location (Replacing existing file with the same name)
 
-            Path dynamicSubPath = Paths.get(fileStorageLocation.toString(),String.valueOf(id), columnName);
+            Path dynamicSubPath = Paths.get(fileStorageLocation.toString(),productName);
 
             Path targetLocation = dynamicSubPath.resolve(fileName);
             new File(targetLocation.toString()).mkdirs();
@@ -62,12 +62,12 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public Resource loadFileAsResource(int id, String columnName, String fileName) {
+    public Resource loadFileAsResource( String productName, String fileName) {
         try {
+            System.out.println("1 " +fileName);
 
-            Path dynamicSubPath = Paths.get(fileStorageLocation.toString(),String.valueOf(id), columnName);
-            Path filePath = dynamicSubPath.resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+            Path dynamicSubPath = Paths.get(fileStorageLocation.toString(),productName,fileName);
+            Resource resource = new UrlResource(dynamicSubPath.toUri());
             if (resource.exists()) {
                 return resource;
             } else {
