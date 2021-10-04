@@ -4,6 +4,7 @@ import com.slash.slash.FileManagement.FileController;
 import com.slash.slash.exceptions.*;
 import com.slash.slash.models.Company;
 import com.slash.slash.models.Product;
+import com.slash.slash.models.ProductDisplayer;
 import com.slash.slash.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(String productName) throws ProducDoesNotExist {
-        Product product = retrieveProductByName(productName);
+        Product product = retrieveRealProductByName(productName);
         if (product != null) {
             Company company = product.getCompany();
             company.deleteProduct(product);
@@ -64,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product editProduct(String productName, Product newProduct) throws ProducDoesNotExist, ProductAlreadyExists {
-        Product oldProduct = retrieveProductByName(productName);
+        Product oldProduct = retrieveRealProductByName(productName);
 
         if (oldProduct == null) {
             throw new ProducDoesNotExist();
@@ -123,7 +124,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product retrieveProductByName(String name) {
+    public ProductDisplayer retrieveProductByName(String name) throws ProducDoesNotExist {
+        Product realProduct = retrieveRealProductByName(name);
+        ProductDisplayer productDisplayer = convertProductForDisplay(realProduct);
+
+        return productDisplayer;
+    }
+
+    private ProductDisplayer convertProductForDisplay(Product realProduct) {
+        ProductDisplayer productDisplayer = new ProductDisplayer();
+
+        productDisplayer.setName( realProduct.getName());
+        productDisplayer.setCompanyName(realProduct.getCompany().getName());
+        productDisplayer.setDescription(realProduct.getDescription());
+        productDisplayer.setImageLink(realProduct.getImageLink());
+        productDisplayer.setType(realProduct.getType());
+        productDisplayer.setImage(fileController.downloadFile(realProduct.getId(), realProduct.getImageLink(), ));
+
+        return productDisplayer;
+    }
+
+
+    public Product retrieveRealProductByName(String name) throws ProducDoesNotExist {
         List<Product> productList = listProducts();
 
         for (Product product : productList) {
@@ -131,6 +153,6 @@ public class ProductServiceImpl implements ProductService {
                 return product;
             }
         }
-        return null;
+        throw new ProducDoesNotExist();
     }
 }

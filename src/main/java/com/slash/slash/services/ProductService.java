@@ -5,6 +5,7 @@ import com.slash.slash.exceptions.ProducDoesNotExist;
 import com.slash.slash.exceptions.ProductAlreadyExists;
 import com.slash.slash.exceptions.ProductHasNoName;
 import com.slash.slash.models.Product;
+import com.slash.slash.models.ProductDisplayer;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface ProductService {
     public List<Product> listProducts();
     public List<Product> listProductByType(String type);
     public List<Product> listProductByCity(String city);
-    public Product retrieveProductByName(String name);
+    public ProductDisplayer retrieveProductByName(String name) throws ProducDoesNotExist;
 }
