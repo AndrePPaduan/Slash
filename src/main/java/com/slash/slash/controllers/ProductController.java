@@ -5,7 +5,6 @@ import com.slash.slash.exceptions.ProducDoesNotExist;
 import com.slash.slash.exceptions.ProductAlreadyExists;
 import com.slash.slash.exceptions.ProductHasNoName;
 import com.slash.slash.models.Product;
-import com.slash.slash.models.ProductDisplayer;
 import com.slash.slash.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -64,11 +63,11 @@ public class ProductController {
 
     @GetMapping("/product/{name}")
     public ResponseEntity<?> retrieveProductByName(@PathVariable String name,  HttpServletRequest request) throws ProducDoesNotExist {
-        ProductDisplayer product = productService.retrieveProductByName(name);
+        Product product = productService.retrieveProductByName(name);
 
         // Load file as Resource
-        Resource resource = product.getImage();
-
+        Resource resource = productService.retrieveProductImage(name);
+        
         // Try to determine file's content type
         String contentType = null;
         try {
@@ -86,8 +85,5 @@ public class ProductController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-
-
-        //return new ResponseEntity<>(product, HttpStatus.OK);
-    }
+}
 

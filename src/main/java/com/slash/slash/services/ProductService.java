@@ -5,10 +5,9 @@ import com.slash.slash.exceptions.ProducDoesNotExist;
 import com.slash.slash.exceptions.ProductAlreadyExists;
 import com.slash.slash.exceptions.ProductHasNoName;
 import com.slash.slash.models.Product;
-import com.slash.slash.models.ProductDisplayer;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface ProductService {
@@ -19,5 +18,6 @@ public interface ProductService {
     public List<Product> listProducts();
     public List<Product> listProductByType(String type);
     public List<Product> listProductByCity(String city);
-    public ProductDisplayer retrieveProductByName(String name) throws ProducDoesNotExist;
+    public Product retrieveProductByName(String name) throws ProducDoesNotExist;
+    public Resource retrieveProductImage (String name) throws ProducDoesNotExist;
 }
