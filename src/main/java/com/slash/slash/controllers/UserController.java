@@ -10,6 +10,7 @@ import com.slash.slash.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,20 +28,21 @@ public class UserController {
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<?> deleteUser(String name, String surname, String password) throws UserDoesNotExist, NotAuthorized {
-          userService.deleteUser(name, surname, password);
+    public ResponseEntity<?> deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized {
+          userService.deleteUser(name, password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/user/{name}/{surname}")
-    public ResponseEntity<?> editUser(@PathVariable String name,@PathVariable String surname, Users user) throws NotAuthorized, UserDoesNotExist, UserAlreadyExists {
-       Users editedUser = userService.editUser(name, surname, user);
+    @PutMapping("/user/{name}/")
+    public ResponseEntity<?> editUser(@PathVariable String name, Users user) throws NotAuthorized, UserDoesNotExist, UserAlreadyExists {
+       Users editedUser = userService.editUser(name, user);
         return new ResponseEntity<>(editedUser, HttpStatus.OK);
     }
 
-
-    public ResponseEntity<?> login(String userEmail, String userPassword) {
-        return null;
+    @PostMapping({"/login"})
+    public ResponseEntity<?> login(Authentication authenticatedUser) {
+        Users user = userService.retrieveRealUserByName(authenticatedUser.getName());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     public ResponseEntity<?> sendConfirmationEmail(String userEmail) {
@@ -63,7 +65,7 @@ public class UserController {
 
     @GetMapping("/user/{name}/{surname}")
     public ResponseEntity<?> retrieveUserByName(@PathVariable String name,@PathVariable String surname) {
-        UserDto userDto = userService.retrieveUserByName(name, surname);
+        UserDto userDto = userService.retrieveUserByName(name);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }

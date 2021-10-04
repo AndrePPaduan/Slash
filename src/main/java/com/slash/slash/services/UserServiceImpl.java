@@ -24,11 +24,11 @@ public class UserServiceImpl implements UserService {
     public Users addUser(Users user) throws UserAlreadyExists, UserHasNoName {
         List<UserDto> userList = listUsers();
 
-        if (user.getName() == null || user.getSurname() == null) {
+        if (user.getName() == null) {
             throw new UserHasNoName();
         }
         for (UserDto savedUsers : userList) {
-            if (savedUsers.getName().equals(user.getName()) && savedUsers.getSurname().equals(user.getSurname())) {
+            if (savedUsers.getName().equals(user.getName())) {
                 throw new UserAlreadyExists();
             }
         }
@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String name, String surname, String password) throws UserDoesNotExist, NotAuthorized {
-        Users user = retrieveFullUserByName(name, surname);
+    public void deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized {
+        Users user = retrieveRealUserByName(name);
         if (user != null) {
             if (password.equals(user.getPassword())) {
                 userRepository.delete(user);
@@ -50,15 +50,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users editUser(String name, String surname, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists {
-        Users oldUser = retrieveFullUserByName(name, surname);
+    public Users editUser(String name, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists {
+        Users oldUser = retrieveRealUserByName(name);
         if (oldUser == null) {
             throw new UserDoesNotExist();
         }
 
         List<Users> userList = userRepository.findAll();
         for (Users savedUsers : userList) {
-            if (savedUsers.getName().equals(user.getName()) && savedUsers.getSurname().equals(user.getSurname()) && oldUser.getId() != savedUsers.getId()) {
+            if (savedUsers.getName().equals(user.getName()) && oldUser.getId() != savedUsers.getId()) {
                 throw new UserAlreadyExists();
             }
         }
@@ -66,7 +66,6 @@ public class UserServiceImpl implements UserService {
         if (oldUser.getPassword().equals(user.getPassword())) {
             oldUser.setEmail(user.getEmail());
             oldUser.setName(user.getName());
-            oldUser.setSurname(user.getSurname());
             userRepository.save(oldUser);
 
         } else {
@@ -108,23 +107,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto retrieveUserByName(String name, String surname) {
+    public UserDto retrieveUserByName(String name) {
 
         List<UserDto> userList = listUsers();
 
         for (UserDto userDto : userList) {
-            if (userDto.getName().equals(name) && userDto.getSurname().equals(surname)) return userDto;
-        }
-        return null;
-
-    }
-
-    private Users retrieveFullUserByName(String name, String surname) {
-
-        List<Users> userList = userRepository.findAll();
-
-        for (Users user : userList) {
-            if (user.getName().equals(name) && user.getSurname().equals(surname)) return user;
+            if (userDto.getName().equals(name)) return userDto;
         }
         return null;
 
@@ -133,9 +121,20 @@ public class UserServiceImpl implements UserService {
     private UserDto userToUserDto(Users user) {
         UserDto userDto = new UserDto();
         userDto.setName(user.getName());
-        userDto.setSurname(user.getSurname());
         userDto.setEmail(user.getEmail());
 
         return userDto;
+    }
+
+    @Override
+    public Users retrieveRealUserByName(String name) {
+
+        List<Users> userList = userRepository.findAll();
+
+        for (Users user : userList) {
+            if (user.getName().equals(name)) return user;
+        }
+        return null;
+
     }
 }
