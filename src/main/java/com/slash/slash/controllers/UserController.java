@@ -1,11 +1,9 @@
 package com.slash.slash.controllers;
 
-import com.slash.slash.exceptions.NotAuthorized;
-import com.slash.slash.exceptions.UserAlreadyExists;
-import com.slash.slash.exceptions.UserHasNoName;
-import com.slash.slash.exceptions.UserDoesNotExist;
+import com.slash.slash.exceptions.*;
 import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
+import com.slash.slash.security.UserPrincipalDetailsService;
 import com.slash.slash.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +38,15 @@ public class UserController {
     }
 
     @PostMapping({"/login"})
-    public ResponseEntity<?> login(Authentication authenticatedUser) {
+    public ResponseEntity<?> login(Authentication authenticatedUser) throws UserRoleNotFoundException, UserDoesNotExist {
+        switch (UserPrincipalDetailsService.userIs(authenticatedUser)) {
+            case "ADMIN":
+                return new ResponseEntity<>("\"ADMIN\"", HttpStatus.OK);
+            case "USER":
+                break;
+            default:
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         Users user = userService.retrieveRealUserByName(authenticatedUser.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -64,7 +70,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{name}/{surname}")
-    public ResponseEntity<?> retrieveUserByName(@PathVariable String name,@PathVariable String surname) {
+    public ResponseEntity<?> retrieveUserByName(@PathVariable String name,@PathVariable String surname) throws UserDoesNotExist {
         UserDto userDto = userService.retrieveUserByName(name);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }

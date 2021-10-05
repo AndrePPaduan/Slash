@@ -1,9 +1,11 @@
 package com.slash.slash.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Users {
@@ -12,11 +14,33 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
     private Boolean isActive;
 
+    @Column(name = "roles", nullable = false)
+    private String roles;
+
+    public Users( String name, String password, String roles) {
+        this.name = name;
+        this.password = password;
+        this.roles = roles;
+        this.isActive = true;
+    }
+
+    public List<String> getRoleList() {
+        if (this.roles.length() > 0) {
+            return Arrays.asList(this.roles.split(","));
+        }
+        return new ArrayList<>();
+    }
 
     public int getId() {
         return id;

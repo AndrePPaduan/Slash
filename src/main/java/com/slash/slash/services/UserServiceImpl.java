@@ -107,14 +107,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto retrieveUserByName(String name) {
+    public UserDto retrieveUserByName(String name) throws UserDoesNotExist {
 
         List<UserDto> userList = listUsers();
 
         for (UserDto userDto : userList) {
             if (userDto.getName().equals(name)) return userDto;
         }
-        return null;
+        throw new UserDoesNotExist();
 
     }
 
@@ -127,14 +127,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users retrieveRealUserByName(String name) {
+    public Users retrieveRealUserByName(String name) throws UserDoesNotExist {
 
         List<Users> userList = userRepository.findAll();
 
         for (Users user : userList) {
             if (user.getName().equals(name)) return user;
         }
-        return null;
+        throw new UserDoesNotExist();
 
     }
 }

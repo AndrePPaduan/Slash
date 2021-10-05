@@ -19,6 +19,6 @@ public interface UserService {
     public void closeSession (String userEmail);
     public void changePassword (String userEmail, String userPassword, String newPassword);
     public List<UserDto> listUsers();
-    public UserDto retrieveUserByName(String name);
-    public Users retrieveRealUserByName(String name);
+    public UserDto retrieveUserByName(String name) throws UserDoesNotExist;
+    public Users retrieveRealUserByName(String name) throws UserDoesNotExist;
 }
