@@ -37,7 +37,7 @@ public class UserController {
         return new ResponseEntity<>(editedUser, HttpStatus.OK);
     }
 
-    @PostMapping({"/login"})
+    @GetMapping({"/login"})
     public ResponseEntity<?> login(Authentication authenticatedUser) throws UserRoleNotFoundException, UserDoesNotExist {
         switch (UserPrincipalDetailsService.userIs(authenticatedUser)) {
             case "ADMIN":

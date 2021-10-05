@@ -23,6 +23,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Users addUser(Users user) throws UserAlreadyExists, UserHasNoName {
         List<UserDto> userList = listUsers();
+            System.out.println(user.getName());
+        System.out.println(user.getPassword());
+        System.out.println(user.getEmail());
+        System.out.println(user.getRoleList());
 
         if (user.getName() == null) {
             throw new UserHasNoName();

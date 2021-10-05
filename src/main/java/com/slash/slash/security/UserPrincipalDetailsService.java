@@ -1,5 +1,6 @@
 package com.slash.slash.security;
 
+import com.slash.slash.exceptions.UserDoesNotExist;
 import com.slash.slash.exceptions.UserRoleNotFoundException;
 import com.slash.slash.models.Users;
 import com.slash.slash.services.UserService;
@@ -24,7 +25,12 @@ public class UserPrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
-        Users user = this.userService.retrieveRealUserByName(name);
+        Users user = null;
+        try {
+            user = this.userService.retrieveRealUserByName(name);
+        } catch (UserDoesNotExist userDoesNotExist) {
+            userDoesNotExist.printStackTrace();
+        }
         UserPrincipal userPrincipal = new UserPrincipal(user);
         return userPrincipal;
 

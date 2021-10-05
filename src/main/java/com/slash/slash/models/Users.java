@@ -1,7 +1,5 @@
 package com.slash.slash.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,13 +12,10 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     private Boolean isActive;
@@ -28,9 +23,13 @@ public class Users {
     @Column(name = "roles", nullable = false)
     private String roles;
 
-    public Users( String name, String password, String roles) {
+    public Users() {
+    }
+
+    public Users(String name, String password, String email, String roles) {
         this.name = name;
         this.password = password;
+        this.email = email;
         this.roles = roles;
         this.isActive = true;
     }

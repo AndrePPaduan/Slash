@@ -27,25 +27,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and()
-                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/baseURL/company/{companyId}").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/baseURL/company*").hasRole("ADMIN")
-                .antMatchers("/baseURL/user*").hasRole("ADMIN")
+                .antMatchers("/").permitAll()
+                .antMatchers("/h2-console/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()
                 .logout()
-                .logoutUrl("/baseURL/user/login?logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID");
+                .logoutUrl("/login?logout");
+
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 
     @Autowired
-    public void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider());
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.
+                inMemoryAuthentication()
+                .withUser("admin").password(passwordEncoder().encode("pass")).roles("ADMIN");
 
     }
 
