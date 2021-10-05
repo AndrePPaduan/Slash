@@ -69,8 +69,8 @@ public class UserController {
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{name}/{surname}")
-    public ResponseEntity<?> retrieveUserByName(@PathVariable String name,@PathVariable String surname) throws UserDoesNotExist {
+    @GetMapping("/user/{name}")
+    public ResponseEntity<?> retrieveUserByName(@PathVariable String name) throws UserDoesNotExist {
         UserDto userDto = userService.retrieveUserByName(name);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }

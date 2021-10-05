@@ -12,15 +12,18 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     private Boolean isActive;
 
-    @Column(name = "roles", nullable = false)
+    @Column(nullable = false)
     private String roles;
 
     public Users() {
@@ -79,5 +82,17 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public Boolean getActive() {
+        return isActive;
     }
 }

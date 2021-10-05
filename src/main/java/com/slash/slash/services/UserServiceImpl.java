@@ -8,6 +8,7 @@ import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -19,14 +20,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+     @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Override
     public Users addUser(Users user) throws UserAlreadyExists, UserHasNoName {
         List<UserDto> userList = listUsers();
-            System.out.println(user.getName());
-        System.out.println(user.getPassword());
-        System.out.println(user.getEmail());
-        System.out.println(user.getRoleList());
+
 
         if (user.getName() == null) {
             throw new UserHasNoName();
@@ -36,6 +37,9 @@ public class UserServiceImpl implements UserService {
                 throw new UserAlreadyExists();
             }
         }
+        user.setActive(true);
+        String password = user.getPassword();
+        user.setPassword(passwordEncoder.encode(password));
         return userRepository.save(user);
     }
 
@@ -126,6 +130,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto();
         userDto.setName(user.getName());
         userDto.setEmail(user.getEmail());
+        userDto.setRoles(user.getRoles());
 
         return userDto;
     }
