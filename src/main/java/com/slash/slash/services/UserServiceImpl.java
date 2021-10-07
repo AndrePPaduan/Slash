@@ -1,9 +1,6 @@
 package com.slash.slash.services;
 
-import com.slash.slash.exceptions.NotAuthorized;
-import com.slash.slash.exceptions.UserAlreadyExists;
-import com.slash.slash.exceptions.UserHasNoName;
-import com.slash.slash.exceptions.UserDoesNotExist;
+import com.slash.slash.exceptions.*;
 import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.repository.UserRepository;
@@ -82,12 +79,6 @@ public class UserServiceImpl implements UserService {
         return oldUser;
     }
 
-
-    @Override
-    public void login(String userEmail, String userPassword) {
-
-    }
-
     @Override
     public void sendConfirmationEmail(String userEmail) {
 
@@ -99,8 +90,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(String userEmail, String userPassword, String newPassword) {
+    public Users changePassword(String name, String userPassword, String newPassword) throws UserDoesNotExist, NotAuthorized {
+        Users user = retrieveRealUserByName(name);
 
+        if (!user.getName().equals(userPassword)){
+            throw new NotAuthorized();
+        }
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
+        return user;
     }
 
     @Override

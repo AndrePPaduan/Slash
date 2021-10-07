@@ -59,8 +59,9 @@ public class UserController {
         return null;
     }
 
-    public ResponseEntity<?> changePassword(String userEmail, String userPassword, String newPassword) {
-        return null;
+    public ResponseEntity<?> changePassword(String name, String userPassword, String newPassword) throws UserDoesNotExist, NotAuthorized {
+        Users user = userService.changePassword(name, userPassword, newPassword);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/user")
