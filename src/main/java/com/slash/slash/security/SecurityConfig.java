@@ -29,8 +29,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
+                .and()
+                .authorizeRequests()
                 .antMatchers("/h2-console/").permitAll()
                 .anyRequest().authenticated()
+                .and()
+                .csrf().ignoringAntMatchers("/h2-console/**")
                 .and()
                 .httpBasic()
                 .and()
@@ -43,9 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.
-                inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder().encode("pass")).roles("ADMIN");
+        auth.authenticationProvider(authenticationProvider());
 
     }
 
@@ -57,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         return daoAuthenticationProvider;
     }
+
 
     @Bean
     PasswordEncoder passwordEncoder() {

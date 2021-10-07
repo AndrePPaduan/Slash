@@ -24,8 +24,12 @@ public class DbInit implements CommandLineRunner {
         this.userRepository.deleteAll();
 
         Users john = new Users("John", passwordEncoder.encode("pass12"), "john@lennon", "ADMIN");
+        Users paul = new Users("Paul", passwordEncoder.encode("pass34"), "paul@mccartney", "ADMIN");
+        Users george = new Users("George", passwordEncoder.encode("pass56"), "george@harrison", "ADMIN");
+        Users ringo = new Users("Ringo", passwordEncoder.encode("pass78"), "ringo@starr", "ADMIN");
 
-        List<Users> users = Arrays.asList(john);
+
+        List<Users> users = Arrays.asList(john, paul, george, ringo);
 
         this.userRepository.saveAll(users);
     }
