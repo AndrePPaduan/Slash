@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface UserService {
 
-    public Users addUser (Users user) throws UserAlreadyExists, UserHasNoName;
+    public Users addUser (Users user) throws UserAlreadyExists, UserHasNoName, IOException;
     public void deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized;
     public Users editUser (String name, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists;
     public void sendConfirmationEmail(String userEmail) throws IOException;

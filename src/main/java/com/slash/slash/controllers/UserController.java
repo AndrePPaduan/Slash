@@ -24,7 +24,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<?> addUser(Users user) throws UserAlreadyExists, UserHasNoName {
+    public ResponseEntity<?> addUser(Users user) throws UserAlreadyExists, UserHasNoName, IOException {
         Users createdUSer = userService.addUser(user);
         return new ResponseEntity<>(createdUSer, HttpStatus.CREATED);
     }
@@ -53,12 +53,6 @@ public class UserController {
         }
         Users user = userService.retrieveRealUserByName(authenticatedUser.getName());
         return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @PostMapping("/user/email")
-    public ResponseEntity<?> sendConfirmationEmail(String userEmail) throws IOException {
-        userService.sendConfirmationEmail(userEmail);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/logout")

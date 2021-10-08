@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Users addUser(Users user) throws UserAlreadyExists, UserHasNoName {
+    public Users addUser(Users user) throws UserAlreadyExists, UserHasNoName, IOException {
         List<UserDto> userList = listUsers();
 
 
@@ -43,6 +43,8 @@ public class UserServiceImpl implements UserService {
         user.setActive(true);
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
+
+        sendConfirmationEmail(user.getEmail());
         return userRepository.save(user);
     }
 
