@@ -1,5 +1,8 @@
 package com.slash.slash.services;
 
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 import com.slash.slash.exceptions.*;
 import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
@@ -7,7 +10,10 @@ import com.slash.slash.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.sendgrid.*;
 
+
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,8 +86,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendConfirmationEmail(String userEmail) {
+    public void sendConfirmationEmail(String userEmail) throws IOException {
 
+        Email from = new Email("sender@email.com");
+        String subject = "Confirmation email";
+        Email to = new Email(userEmail);
+        Content content = new Content("text/plain", "confirmation email for Slash app");
+        Mail mail = new Mail(from, subject, to, content);
+
+        SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sg.api(request);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+        } catch (IOException ex) {
+            throw ex;
+        }
     }
 
     @Override

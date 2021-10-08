@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -51,8 +52,10 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> sendConfirmationEmail(String userEmail) {
-        return null;
+    @PostMapping("/user/email")
+    public ResponseEntity<?> sendConfirmationEmail(String userEmail) throws IOException {
+        userService.sendConfirmationEmail(userEmail);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public ResponseEntity<?> closeSession(String userEmail) {

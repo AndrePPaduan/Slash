@@ -28,7 +28,7 @@ public class ProductController {
     @PostMapping("/product/{companyName}")
     public ResponseEntity<?> addProduct(@PathVariable String companyName, Product product, MultipartFile file) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
         Product createdProduct = productService.addProduct(product, companyName, file);
-        return  new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/product")
@@ -61,21 +61,17 @@ public class ProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
-    @GetMapping("/product/{name}")
-    public ResponseEntity<?> retrieveProductByName(@PathVariable String name,  HttpServletRequest request) throws ProducDoesNotExist {
-        Product product = productService.retrieveProductByName(name);
+    @GetMapping("/product/image/{name}")
+    public ResponseEntity<?> retrieveProductImageByName(@PathVariable String name, HttpServletRequest request) throws ProducDoesNotExist {
 
-        // Load file as Resource
         Resource resource = productService.retrieveProductImage(name);
-        
-        // Try to determine file's content type
+
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
         }
 
-        // Fallback to the default content type if type could not be determined
         if (contentType == null) {
             contentType = "application/octet-stream";
         }
@@ -84,6 +80,13 @@ public class ProductController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @GetMapping("/product/{name}")
+    public ResponseEntity<?> retrieveProductByName(@PathVariable String name) throws ProducDoesNotExist {
+
+        Product product = productService.retrieveProductByName(name);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 }
 

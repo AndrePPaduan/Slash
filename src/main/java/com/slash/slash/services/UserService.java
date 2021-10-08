@@ -7,6 +7,7 @@ import com.slash.slash.exceptions.UserDoesNotExist;
 import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -14,7 +15,7 @@ public interface UserService {
     public Users addUser (Users user) throws UserAlreadyExists, UserHasNoName;
     public void deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized;
     public Users editUser (String name, Users user) throws UserDoesNotExist, NotAuthorized, UserAlreadyExists;
-    public void sendConfirmationEmail(String userEmail);
+    public void sendConfirmationEmail(String userEmail) throws IOException;
     public void closeSession (String userEmail);
     public Users changePassword (String name, String userPassword, String newPassword) throws UserDoesNotExist, NotAuthorized;
     public List<UserDto> listUsers();
