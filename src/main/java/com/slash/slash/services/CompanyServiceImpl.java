@@ -53,7 +53,6 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company editCompany(String companyName, Company newCompany) throws CompanyDoesNotExist, CompanyAlreadyExists {
         Company oldCompany = retrieveCompanyByName(companyName);
-
         if (oldCompany == null) {
             throw new CompanyDoesNotExist();
         }

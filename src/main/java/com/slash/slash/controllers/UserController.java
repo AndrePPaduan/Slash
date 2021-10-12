@@ -30,18 +30,18 @@ public class UserController {
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<?> deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized {
-          userService.deleteUser(name, password);
+    public ResponseEntity<?> deleteUser(String name) throws UserDoesNotExist {
+          userService.deleteUser(name);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/user/{name}/")
-    public ResponseEntity<?> editUser(@PathVariable String name, Users user) throws NotAuthorized, UserDoesNotExist, UserAlreadyExists {
-       Users editedUser = userService.editUser(name, user);
+    @PutMapping("/user")
+    public ResponseEntity<?> editUser(String username, Users user) throws NotAuthorized, UserDoesNotExist, UserAlreadyExists {
+       Users editedUser = userService.editUser(username, user);
         return new ResponseEntity<>(editedUser, HttpStatus.OK);
     }
 
-    @GetMapping({"/login"})
+    @GetMapping({"/user/login"})
     public ResponseEntity<?> login(Authentication authenticatedUser) throws UserRoleNotFoundException, UserDoesNotExist {
         switch (UserPrincipalDetailsService.userIs(authenticatedUser)) {
             case "ADMIN":
@@ -55,7 +55,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/user/logout")
     public ResponseEntity<?> closeSession(HttpServletRequest request, HttpServletResponse response) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -65,6 +65,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/user/password")
     public ResponseEntity<?> changePassword(String name, String userPassword, String newPassword) throws UserDoesNotExist, NotAuthorized {
         Users user = userService.changePassword(name, userPassword, newPassword);
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -76,8 +77,8 @@ public class UserController {
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{name}")
-    public ResponseEntity<?> retrieveUserByName(@PathVariable String name) throws UserDoesNotExist {
+    @GetMapping("/user/name")
+    public ResponseEntity<?> retrieveUserByName(String name) throws UserDoesNotExist {
         UserDto userDto = userService.retrieveUserByName(name);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }

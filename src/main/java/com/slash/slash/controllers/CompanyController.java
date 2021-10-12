@@ -31,8 +31,8 @@ public class CompanyController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/company/{companyName}")
-    public ResponseEntity<?> editCompany(@PathVariable String companyName, Company newCompany) throws CompanyDoesNotExist, CompanyAlreadyExists {
+    @PutMapping("/company")
+    public ResponseEntity<?> editCompany(String companyName, Company newCompany) throws CompanyDoesNotExist, CompanyAlreadyExists {
         Company company = companyService.editCompany(companyName, newCompany);
         return new ResponseEntity<>(company, HttpStatus.OK);
     }
@@ -43,8 +43,8 @@ public class CompanyController {
         return new ResponseEntity<>(companyList, HttpStatus.OK);
     }
 
-    @GetMapping("/company/{name}")
-    public ResponseEntity<?> retrieveCompanyByName(@PathVariable String name) {
+    @GetMapping("/company/name")
+    public ResponseEntity<?> retrieveCompanyByName(String name) {
         Company company = companyService.retrieveCompanyByName(name);
         return new ResponseEntity<>(company, HttpStatus.OK);
 

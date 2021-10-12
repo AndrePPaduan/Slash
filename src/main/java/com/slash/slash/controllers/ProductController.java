@@ -25,8 +25,8 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/product/{companyName}")
-    public ResponseEntity<?> addProduct(@PathVariable String companyName, Product product, MultipartFile file) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
+    @PostMapping("/product")
+    public ResponseEntity<?> addProduct(String companyName, Product product, MultipartFile file) throws ProductAlreadyExists, ProductHasNoName, CompanyDoesNotExist {
         Product createdProduct = productService.addProduct(product, companyName, file);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
@@ -37,10 +37,10 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/product/{productName}")
-    public ResponseEntity<?> editProduct(@PathVariable String productName, Product newProduct) throws ProducDoesNotExist, ProductAlreadyExists {
+    @PutMapping("/product")
+    public ResponseEntity<?> editProduct(String productName, Product newProduct) throws ProducDoesNotExist, ProductAlreadyExists {
         productService.editProduct(productName, newProduct);
-        return new ResponseEntity<>(productName, HttpStatus.OK);
+        return new ResponseEntity<>(newProduct, HttpStatus.OK);
     }
 
     @GetMapping("/product")
@@ -61,8 +61,8 @@ public class ProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
-    @GetMapping("/product/image/{name}")
-    public ResponseEntity<?> retrieveProductImageByName(@PathVariable String name, HttpServletRequest request) throws ProducDoesNotExist {
+    @GetMapping("/product/image")
+    public ResponseEntity<?> retrieveProductImageByName(String name, HttpServletRequest request) throws ProducDoesNotExist {
 
         Resource resource = productService.retrieveProductImage(name);
 
@@ -82,8 +82,8 @@ public class ProductController {
                 .body(resource);
     }
 
-    @GetMapping("/product/{name}")
-    public ResponseEntity<?> retrieveProductByName(@PathVariable String name) throws ProducDoesNotExist {
+    @GetMapping("/product/name")
+    public ResponseEntity<?> retrieveProductByName(String name) throws ProducDoesNotExist {
 
         Product product = productService.retrieveProductByName(name);
         return new ResponseEntity<>(product, HttpStatus.OK);

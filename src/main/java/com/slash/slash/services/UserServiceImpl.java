@@ -41,22 +41,16 @@ public class UserServiceImpl implements UserService {
             }
         }
         user.setActive(true);
-        String password = user.getPassword();
-        user.setPassword(passwordEncoder.encode(password));
 
-        sendConfirmationEmail(user.getEmail());
+        //sendConfirmationEmail(user.getEmail());
         return userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized {
+    public void deleteUser(String name) throws UserDoesNotExist {
         Users user = retrieveRealUserByName(name);
         if (user != null) {
-            if (password.equals(user.getPassword())) {
                 userRepository.delete(user);
-            } else {
-                throw new NotAuthorized();
-            }
         } else {
             throw new UserDoesNotExist();
         }
@@ -75,15 +69,9 @@ public class UserServiceImpl implements UserService {
                 throw new UserAlreadyExists();
             }
         }
-
-        if (oldUser.getPassword().equals(user.getPassword())) {
             oldUser.setEmail(user.getEmail());
             oldUser.setName(user.getName());
             userRepository.save(oldUser);
-
-        } else {
-            throw new NotAuthorized();
-        }
         return oldUser;
     }
 
@@ -116,10 +104,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Users changePassword(String name, String userPassword, String newPassword) throws UserDoesNotExist, NotAuthorized {
         Users user = retrieveRealUserByName(name);
-
-        if (!user.getName().equals(userPassword)){
-            throw new NotAuthorized();
-        }
 
         user.setPassword(newPassword);
         userRepository.save(user);

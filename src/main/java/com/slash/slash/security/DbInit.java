@@ -28,7 +28,6 @@ public class DbInit implements CommandLineRunner {
         Users george = new Users("George", passwordEncoder.encode("pass56"), "george@harrison", "ADMIN");
         Users ringo = new Users("Ringo", passwordEncoder.encode("pass78"), "ringo@starr", "ADMIN");
 
-
         List<Users> users = Arrays.asList(john, paul, george, ringo);
 
         this.userRepository.saveAll(users);
