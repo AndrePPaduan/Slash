@@ -30,8 +30,8 @@ public class UserController {
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<?> deleteUser(String name) throws UserDoesNotExist {
-          userService.deleteUser(name);
+    public ResponseEntity<?> deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized {
+          userService.deleteUser(name, password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

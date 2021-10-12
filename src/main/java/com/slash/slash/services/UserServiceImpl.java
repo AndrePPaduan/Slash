@@ -8,6 +8,7 @@ import com.slash.slash.models.Users;
 import com.slash.slash.models.UserDto;
 import com.slash.slash.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.sendgrid.*;
@@ -23,8 +24,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-     @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
     @Override
@@ -41,16 +42,19 @@ public class UserServiceImpl implements UserService {
             }
         }
         user.setActive(true);
-
-        //sendConfirmationEmail(user.getEmail());
+        sendConfirmationEmail(user.getEmail());
         return userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(String name) throws UserDoesNotExist {
+    public void deleteUser(String name, String password) throws UserDoesNotExist, NotAuthorized {
         Users user = retrieveRealUserByName(name);
         if (user != null) {
+            if (passwordEncoder.matches(password,user.getPassword())) {
                 userRepository.delete(user);
+            } else {
+                throw new NotAuthorized();
+            }
         } else {
             throw new UserDoesNotExist();
         }
@@ -69,9 +73,15 @@ public class UserServiceImpl implements UserService {
                 throw new UserAlreadyExists();
             }
         }
+
+        if (passwordEncoder.matches(user.getPassword(),oldUser.getPassword())) {
             oldUser.setEmail(user.getEmail());
             oldUser.setName(user.getName());
             userRepository.save(oldUser);
+
+        } else {
+            throw new NotAuthorized();
+        }
         return oldUser;
     }
 
@@ -104,6 +114,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Users changePassword(String name, String userPassword, String newPassword) throws UserDoesNotExist, NotAuthorized {
         Users user = retrieveRealUserByName(name);
+
+        if (!passwordEncoder.matches(userPassword, user.getPassword())){
+            throw new NotAuthorized();
+        }
 
         user.setPassword(newPassword);
         userRepository.save(user);
